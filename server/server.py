@@ -173,7 +173,8 @@ def setup_commands():
 #    )
 #
     if 'Example.mobileconfig' in os.listdir('.'):
-        my_test_cfg_profile = open('Example.mobileconfig', 'rb').read()
+#        my_test_cfg_profile = open('Example.mobileconfig', 'rb').read()
+        my_test_cfg_profile = open('SetupAssistant13D136.mobileconfig', 'rb').read()
         pl = readPlistFromString(my_test_cfg_profile)
 
         ret_list['InstallProfile'] = dict(
@@ -335,12 +336,15 @@ class queue_cmd_post:
 class do_mdm:        
     def PUT(self):
         global sm_obj, device_list
-        HIGH='[1;31m'
-        LOW='[0;32m'
-        NORMAL='[0;39m'
+        HIGH=''
+        LOW=''
+        NORMAL=''
 
         i = web.data()
         pl = readPlistFromString(i)
+
+	print pl
+	print web.ctx.environ
 
         if 'HTTP_MDM_SIGNATURE' in web.ctx.environ:
             raw_sig = web.ctx.environ['HTTP_MDM_SIGNATURE']
@@ -529,10 +533,13 @@ def read_devices():
 
 def do_TokenUpdate(pl):
     global mdm_commands
-
+    print "CONTENTS OF TokenUpdate plist:\n\n", pl
     my_PushMagic = pl['PushMagic']
     my_DeviceToken = pl['Token'].data
-    my_UnlockToken = pl['UnlockToken'].data
+    if pl.get('UnlockToken'):
+        my_UnlockToken = pl['UnlockToken'].data
+    else:
+        my_UnlockToken = pl['Token'].data
 
     newTuple = (web.ctx.ip, my_PushMagic, my_DeviceToken, my_UnlockToken)
 
@@ -657,4 +664,3 @@ else:
     # Placing these above main causes them to run twice
     mdm_commands = setup_commands()
     read_devices()
-
