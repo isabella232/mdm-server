@@ -179,8 +179,7 @@ def setup_commands():
 #    )
 #
     if 'Example.mobileconfig' in os.listdir('.'):
-#        my_test_cfg_profile = open('Example.mobileconfig', 'rb').read()
-        my_test_cfg_profile = open('UMROOT.mobileconfig', 'r').read()
+       my_test_cfg_profile = open('Example.mobileconfig', 'rb').read()
         pl = readPlistFromString(my_test_cfg_profile)
 
 
