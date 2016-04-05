@@ -233,6 +233,8 @@ def setup_commands():
         iTunesStoreID=471966214,  # iTunes Movie Trailers
     ))
 
+    # Load PBKDF2-SHA512 password hash for automatic account creation during
+    #   SetupConfiguration stage in Setup Assistant
     my_password_hash_plist = open('shadowhash.plist', 'rb').read()
 
     ret_list['SetupConfiguration'] = dict(
@@ -246,7 +248,8 @@ def setup_commands():
             }
     })
 
-    # if ('MyApp.ipa' in os.listdir('.')) and ('Manifest.plist' in os.listdir('.')):
+    # Manifest.plist is just a trigger to make this command available, it is not
+    #   sent to the client, instead it is loaded from the ManifestURL instead
     if ('Manifest.plist' in os.listdir('.')):
         ret_list['InstallManagementTools'] = dict(
         Command = dict(
@@ -366,7 +369,6 @@ def queue(cmd, dev_UDID):
     wrapper.notify()
 
 
-
 class queue_cmd_post:
     def POST(self):
         global device_list
@@ -381,6 +383,7 @@ class queue_cmd_post:
         # Update page - currently not using update()
         #return update()
         return
+
 
 class do_mdm:
     def PUT(self):
@@ -532,6 +535,7 @@ class do_mdm:
         else:
             raise web.notfound()
 
+
 class get_commands:
     def POST(self):
         # Function to return static list of commands to the front page
@@ -542,6 +546,7 @@ class get_commands:
         for key in sorted(mdm_commands.iterkeys()):
             drop_list.append([key, key])
         return json.dumps(drop_list)
+
 
 def update():
 
@@ -577,6 +582,7 @@ class poll:
 
         # Polling function to update page with new data
         return update()
+
 
 class get_response:
     def POST(self):
@@ -646,6 +652,7 @@ class metadata:
 
         return
 
+
 def store_devices():
     # Function to convert the device list and write to a file
     global device_list
@@ -654,6 +661,7 @@ def store_devices():
 
     # Use pickle to store list of devices
     pickle.dump(device_list, file('devicelist.pickle', 'w'))
+
 
 def read_devices():
     # Function to open and read the device list
@@ -687,7 +695,7 @@ def do_TokenUpdate(pl):
     if pl.get('AwaitingConfiguration'):
         if pl.get('UDID') in devicesAwaitingConfiguration:
             devicesAwaitingConfiguration[pl['UDID']] = { 'status': 'AwaitingConfiguration',
-                                                     'mtime': int(datetime.now().strftime('%s'))}
+                                                         'mtime': int(datetime.now().strftime('%s'))}
 
     newTuple = (web.ctx.ip, my_PushMagic, my_DeviceToken, my_UnlockToken)
 
@@ -724,6 +732,7 @@ class enroll_profile:
         else:
             raise web.notfound()
 
+
 class do_problem:
     # DEBUG
     # DEPRICATED?
@@ -745,6 +754,7 @@ class do_problem:
         fd = open('problems.py', 'w')
         fd.write(out)
         fd.close()
+
 
 class mdm_ca:
     def GET(self):
