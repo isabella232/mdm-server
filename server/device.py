@@ -196,7 +196,7 @@ class device:
         # If we have no commands waiting, we're good
         if self.status != 1:
             return
-        
+
         # Check queue for timed out commands
         if len(self.queue) > 0:
             for cmd in self.queue:
@@ -215,5 +215,9 @@ class device:
         for commandUUID in self.cmdList:
             if self.cmdList[commandUUID]['response'] == "" and now-self.cmdList[commandUUID]['cmd']['TimeStamp'] > self.TIMEOUT:
                 self.status = 2
-                self.cmdList[command['cmd']['CommandUUID']]['status'] = 'danger'
-                self.cmdList[command['cmd']['CommandUUID']]['response'] = {'Status':'TimeoutError'}
+                print('cmdList is: %s' % self.cmdList)
+
+                if self.cmdList.get('Command'):
+                    print('cmdList command is: %s' % self.cmdList.get('Command'))
+                    self.cmdList[Command['cmd']['CommandUUID']]['status'] = 'danger'
+                    self.cmdList[Command['cmd']['CommandUUID']]['response'] = {'Status':'TimeoutError'}
